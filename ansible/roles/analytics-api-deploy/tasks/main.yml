@@ -35,7 +35,7 @@
 
 - name: temporarly overriding the netty jar
   get_url:
-    url: http://central.maven.org/maven2/io/netty/netty-all/4.0.37.Final/netty-all-4.0.37.Final.jar
+    url: https://repo1.maven.org/maven2/io/netty/netty-all/4.0.37.Final/netty-all-4.0.37.Final.jar
     dest: "{{ analytics_api.root }}/analytics-api-1.0/lib/"
 
 - name: Start the api service
