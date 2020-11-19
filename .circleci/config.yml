@@ -45,7 +45,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - ~/dp/*
+            - /home/circleci/dp/*
   sonar:
     working_directory: ~/dp/data-pipeline-flink
     docker:
