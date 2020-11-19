@@ -66,6 +66,5 @@ workflows:
     jobs:
       - build
       - sonar:
-          context: token
           requires:
             - build
