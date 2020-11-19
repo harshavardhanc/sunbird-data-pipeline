@@ -1,8 +1,36 @@
+#version: 2.1
+#jobs:
+#  datapipeline-build:
+#    working_directory: ~/dp/data-pipeline-flink
+#    machine: true
+#    steps:
+#      - checkout:
+#          path: ~/dp
+#      - restore_cache:
+#          key: dependency-cache-{{ checksum "pom.xml" }}
+#      - save_cache:
+#          key: dependency-cache-{{ checksum "pom.xml" }}
+#          paths: ~/.m2
+#      - run: mvn clean scoverage:report
+#      - run:
+#          name: sonar
+#          command: |
+#            mvn -X sonar:sonar -Dlog4j.configuration=./logs sonar:sonar -Dsonar.projectKey=project-sunbird_sunbird-data-pipeline -Dsonar.organization=project-sunbird -Dsonar.exclusions=/home/circleci/dp/ansible/**,/home/circleci/dp/schema/**,/home/circleci/dp/pipelines/**,/home/circleci/dp/data-pipeline/**,/home/circleci/dp/kubernetes/**,/home/circleci/dp/test-data/**, -Dsonar.host.url=https://sonarcloud.io -Dsonar.scala.coverage.reportPaths=/home/circleci/dp/data-pipeline-flink/target/scoverage.xml
+#
+#workflows:
+#  version: 2.1
+#  build_and_test:
+#    jobs:
+#      - datapipeline-build
+#testing quality gate
+
 version: 2.1
+
 jobs:
-  datapipeline-build:
+  build:
     working_directory: ~/dp/data-pipeline-flink
-    machine: true
+    docker:
+      - image: 'circleci/openjdk:8-jdk'
     steps:
       - checkout:
           path: ~/dp
@@ -11,15 +39,33 @@ jobs:
       - save_cache:
           key: dependency-cache-{{ checksum "pom.xml" }}
           paths: ~/.m2
-      - run: mvn clean scoverage:report
+      - run:
+          name: build & test
+          command: mvn clean scoverage:report
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ~/dp/*
+  sonar:
+    working_directory: ~/dp/data-pipeline-flink
+    docker:
+      - image: 'circleci/openjdk:11-jdk'
+    steps:
+      - checkout:
+          path: ~/dp
+      - attach_workspace:
+          at: .
       - run:
           name: sonar
           command: |
-            mvn -X sonar:sonar -Dlog4j.configuration=./logs sonar:sonar -Dsonar.projectKey=project-sunbird_sunbird-data-pipeline -Dsonar.organization=project-sunbird -Dsonar.exclusions=/home/circleci/dp/ansible/**,/home/circleci/dp/schema/**,/home/circleci/dp/pipelines/**,/home/circleci/dp/data-pipeline/**,/home/circleci/dp/kubernetes/**,/home/circleci/dp/test-data/**, -Dsonar.host.url=https://sonarcloud.io -Dsonar.scala.coverage.reportPaths=/home/circleci/dp/data-pipeline-flink/target/scoverage.xml
+            mvn -X sonar:sonar -Dlog4j.configuration=./logs sonar:sonar -Dsonar.projectKey=harshavardhanc_sunbird-data-pipeline -Dsonar.organization=harshavardhanc -Dsonar.exclusions=/home/circleci/dp/ansible/**,/home/circleci/dp/schema/**,/home/circleci/dp/pipelines/**,/home/circleci/dp/data-pipeline/**,/home/circleci/dp/kubernetes/**,/home/circleci/dp/test-data/**, -Dsonar.host.url=https://sonarcloud.io -Dsonar.scala.coverage.reportPaths=/home/circleci/dp/data-pipeline-flink/target/scoverage.xml
+
 
 workflows:
-  version: 2.1
-  build_and_test:
+  main:
     jobs:
-      - datapipeline-build
-#testing quality gate
+      - build
+      - sonar:
+          context: token
+          requires:
+            - build
