@@ -47,7 +47,6 @@ jobs:
           paths:
             - dp/data-pipeline-flink
   sonar:
-    working_directory: ~/dp/data-pipeline-flink
     docker:
       - image: 'circleci/openjdk:11-jdk'
     steps:
@@ -58,7 +57,7 @@ jobs:
       - run:
           name: sonar
           command: |
-            mvn -X sonar:sonar -Dlog4j.configuration=./logs sonar:sonar -Dsonar.projectKey=harshavardhanc_sunbird-data-pipeline -Dsonar.organization=harshavardhanc -Dsonar.exclusions=/home/circleci/dp/ansible/**,/home/circleci/dp/schema/**,/home/circleci/dp/pipelines/**,/home/circleci/dp/data-pipeline/**,/home/circleci/dp/kubernetes/**,/home/circleci/dp/test-data/**, -Dsonar.host.url=https://sonarcloud.io -Dsonar.scala.coverage.reportPaths=/home/circleci/dp/data-pipeline-flink/target/scoverage.xml
+            cd ~/dp/data-pipeline-flink && mvn -X sonar:sonar -Dlog4j.configuration=./logs sonar:sonar -Dsonar.projectKey=harshavardhanc_sunbird-data-pipeline -Dsonar.organization=harshavardhanc -Dsonar.exclusions=/home/circleci/dp/ansible/**,/home/circleci/dp/schema/**,/home/circleci/dp/pipelines/**,/home/circleci/dp/data-pipeline/**,/home/circleci/dp/kubernetes/**,/home/circleci/dp/test-data/**, -Dsonar.host.url=https://sonarcloud.io -Dsonar.scala.coverage.reportPaths=/home/circleci/dp/data-pipeline-flink/target/scoverage.xml
 
 
 workflows:
