@@ -30,7 +30,7 @@ jobs:
   build:
     working_directory: ~/dp/data-pipeline-flink
     docker:
-      - image: 'maven:3-openjdk-8'
+      - image: 'circleci/openjdk:8-jdk'
     steps:
       - checkout:
           path: ~/dp
@@ -49,7 +49,7 @@ jobs:
   sonar:
     working_directory: ~/dp/data-pipeline-flink
     docker:
-      - image: 'maven:3-openjdk-11'
+      - image: 'circleci/openjdk:11-jdk'
     steps:
       - checkout:
           path: ~/dp
