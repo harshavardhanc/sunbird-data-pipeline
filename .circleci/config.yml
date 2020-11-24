@@ -39,9 +39,9 @@ jobs:
       - save_cache:
           key: dependency-cache-{{ checksum "pom.xml" }}
           paths: ~/.m2
-          #      - run:
-          #          name: build & test
-          #          command: mvn clean scoverage:report
+      - run:
+          name: build & test
+          command: mvn clean scoverage:report
       - persist_to_workspace:
           root: ~/
           paths:
