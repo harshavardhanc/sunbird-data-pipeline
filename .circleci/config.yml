@@ -1,10 +1,36 @@
+#version: 2.1
+#jobs:
+#  datapipeline-build:
+#    working_directory: ~/dp/data-pipeline-flink
+#    machine: true
+#    steps:
+#      - checkout:
+#          path: ~/dp
+#      - restore_cache:
+#          key: dependency-cache-{{ checksum "pom.xml" }}
+#      - save_cache:
+#          key: dependency-cache-{{ checksum "pom.xml" }}
+#          paths: ~/.m2
+#      - run: mvn clean scoverage:report
+#      - run:
+#          name: sonar
+#          command: |
+#            mvn -X sonar:sonar -Dlog4j.configuration=./logs sonar:sonar -Dsonar.projectKey=project-sunbird_sunbird-data-pipeline -Dsonar.organization=project-sunbird -Dsonar.exclusions=/home/circleci/dp/ansible/**,/home/circleci/dp/schema/**,/home/circleci/dp/pipelines/**,/home/circleci/dp/data-pipeline/**,/home/circleci/dp/kubernetes/**,/home/circleci/dp/test-data/**, -Dsonar.host.url=https://sonarcloud.io -Dsonar.scala.coverage.reportPaths=/home/circleci/dp/data-pipeline-flink/target/scoverage.xml
+#
+#workflows:
+#  version: 2.1
+#  build_and_test:
+#    jobs:
+#      - datapipeline-build
+#testing quality gate
+
 version: 2.1
 
 jobs:
   build:
     working_directory: ~/dp/data-pipeline-flink
     docker:
-      - image: 'maven:3-openjdk-8'
+      - image: 'circleci/openjdk:8-jdk'
     steps:
       - checkout:
           path: ~/dp
@@ -22,7 +48,7 @@ jobs:
             - dp/data-pipeline-flink
   sonar:
     docker:
-      - image: 'maven:3-openjdk-11'
+      - image: 'circleci/openjdk:11-jdk'
     steps:
       - checkout:
           path: ~/dp
@@ -31,7 +57,7 @@ jobs:
       - run:
           name: sonar
           command: |
-            cd ~/project/dp/data-pipeline-flink && mvn -X sonar:sonar -Dlog4j.configuration=./logs sonar:sonar -Dsonar.projectKey=harshavardhanc_sunbird-data-pipeline -Dsonar.organization=harshavardhanc -Dsonar.exclusions=~/project/dp/ansible/**,~/project/dp/schema/**,~/project/dp/pipelines/**,~/project/dp/data-pipeline/**,~/project/dp/kubernetes/**,~/project/dp/test-data/**, -Dsonar.host.url=https://sonarcloud.io -Dsonar.scala.coverage.reportPaths=~/project/dp/data-pipeline-flink/target/scoverage.xml
+            cd ~/project/dp/data-pipeline-flink && mvn -X sonar:sonar -Dlog4j.configuration=./logs sonar:sonar -Dsonar.projectKey=harshavardhanc_sunbird-data-pipeline -Dsonar.organization=harshavardhanc -Dsonar.exclusions=/home/circleci/project/dp/ansible/**,/home/circleci/project/dp/schema/**,/home/circleci//project/dp/pipelines/**,/home/circleci/project/dp/data-pipeline/**,/home/circleci/project/dp/kubernetes/**,/home/circleci/project/dp/test-data/**, -Dsonar.host.url=https://sonarcloud.io -Dsonar.scala.coverage.reportPaths=/home/circleci/project/dp/data-pipeline-flink/target/scoverage.xml
 
 
 workflows:
